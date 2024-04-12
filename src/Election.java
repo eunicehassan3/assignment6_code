@@ -37,11 +37,29 @@ public class Election {
 
     }
     public void rigElection(String candidate){
-        String topCandidate = ranking.peek();
-        int topCandidateVotes = ballot.get(topCandidate);
-        int remainingVotes =  topCandidateVotes - ballot.get(candidate);
-        ballot.put(candidate, remainingVotes + 2);
-        updatePriorityQueue();
+        int total = 0;
+        for (int votes : ballot.values()) {
+            total += votes;
+        }
+
+        int remainingVotes = total;
+
+        if (ballot.containsKey(candidate)) {
+
+            remainingVotes -= 2;
+
+            ballot.put(candidate, remainingVotes);
+            for (String c : ballot.keySet()) {
+                if (!c.equals(candidate) && remainingVotes > 0) {
+                    ballot.put(c, 1);
+                    remainingVotes -= 2;
+                }
+            }
+            updatePriorityQueue();
+        } else {
+            System.out.println("Candidate does not exist.");
+        }
+
     }
     public ArrayList<String> getTopKCandidates(int k){
         ArrayList<String> topGs = new ArrayList<>();
